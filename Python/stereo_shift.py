@@ -73,6 +73,12 @@ class StereoShift():
             )
         )
 
+def write_debug_shift(left, right_shift):
+    import PIL.Image as Image
+    for shift, index in zip(right_shift, range(len(right_shift))):
+        blend_img = Image.fromarray(((255 * shift + left)/2).astype(np.uint8))
+        blend_img.save('shift_{0:2d}.png'.format(index))
+
 if __name__ == '__main__':
     import PIL.Image as Image
     left = np.array(Image.open('data/teddy/im2.png').convert('L'))
@@ -84,6 +90,4 @@ if __name__ == '__main__':
     ss.get(d_shift.data, disparity_range)
 
     right_shift = cp.asnumpy(d_shift)
-    for shift, index in zip(right_shift, range(len(right_shift))):
-        blend_img = Image.fromarray(((255 * shift + left)/2).astype(np.uint8))
-        blend_img.save('shift_{0:2d}.png'.format(index))
+    write_debug_shift(left, right_shift)
